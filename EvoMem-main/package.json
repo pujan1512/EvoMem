@@ -1,0 +1,15 @@
+{
+  "name": "ekagra-ai-productivity-tracker",
+  "version": "1.0.0",
+  "description": "EkagraAI - Productivity Tracker (UCS503 Software Engineering Project)",
+  "private": true,
+  "scripts": {
+    "start": "cd server && node server.js",
+    "server": "cd server && node server.js",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"cd server && npm start\" \"cd client && npm run dev\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

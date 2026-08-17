@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Environment Variables & Secrets
+.env
+*.env
+
+# SQLite Database & Storage
+*.sqlite
+ekagra_database.sqlite
+
+# Dynamic Upload Files
+uploads/*
+!uploads/.gitkeep
+
+# Logs
+*.log

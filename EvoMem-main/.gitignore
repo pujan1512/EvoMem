@@ -1,0 +1,28 @@
+# Node Dependencies
+node_modules/
+**/node_modules/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# Build Outputs
+dist/
+build/
+
+# Database Files
+*.sqlite
+server/ekagra_database.sqlite
+
+# Media & Presentation Uploads
+server/uploads/*
+!server/uploads/.gitkeep
+
+# IDE & Logs
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
