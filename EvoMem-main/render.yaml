@@ -3,7 +3,7 @@ services:
   - type: web
     name: evomem-backend
     env: node
-    rootDir: server
+    rootDir: EvoMem-main/server
     buildCommand: npm install
     startCommand: node server.js
     envVars:
@@ -18,7 +18,7 @@ services:
   - type: web
     name: evomem-frontend
     env: static
-    rootDir: client
+    rootDir: EvoMem-main/client
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     routes:
