@@ -6,13 +6,20 @@ const fs = require('fs');
 const defineModels = require('../models');
 const { requireAdmin } = require('../middleware/auth');
 const { convertPPTToPDF } = require('../utils/pdfConverter');
+const {
+  isSupabaseConfigured,
+  uploadToSupabase,
+  deleteFromSupabase,
+  getPublicUrl,
+  getMimeType
+} = require('../config/supabase');
 
 const uploadsDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Multer Storage configuration
+// Multer Storage configuration (temporary local disk storage before Supabase upload or static serving fallback)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadsDir);
@@ -55,15 +62,21 @@ router.get('/', async (req, res) => {
     for (const record of records) {
       const pdfFileName = record.pdfFilePath;
       if (pdfFileName) {
+        const isRemote = pdfFileName.startsWith('http://') || pdfFileName.startsWith('https://') || isSupabaseConfigured();
         const fullPdfPath = path.join(uploadsDir, pdfFileName);
-        if (fs.existsSync(fullPdfPath)) {
+        
+        // If file is on Supabase (isRemote) or exists on local disk
+        if (isRemote || fs.existsSync(fullPdfPath)) {
+          const pdfUrl = getPublicUrl(record.pdfFilePath);
+          const originalUrl = getPublicUrl(record.originalFilePath);
+
           availablePresentations.push({
             id: record.id,
             presentationName: record.presentationName,
             originalFilePath: record.originalFilePath,
             pdfFilePath: record.pdfFilePath,
-            pdfUrl: `/uploads/${record.pdfFilePath}`,
-            originalUrl: `/uploads/${record.originalFilePath}`,
+            pdfUrl,
+            originalUrl,
             version: record.version,
             uploadedBy: record.uploadedBy,
             uploadedAt: record.uploadedAt
@@ -99,7 +112,7 @@ router.get('/', async (req, res) => {
 
 /**
  * POST /api/ppt/upload (Admin only)
- * Receives PPT/PPTX/PDF -> Bypasses LibreOffice for native PDF -> Stores Metadata
+ * Receives PPT/PPTX/PDF -> Bypasses LibreOffice for native PDF -> Stores in Supabase or Local Disk
  */
 const handleUpload = async (req, res) => {
   upload.single('pptFile')(req, res, async (err) => {
@@ -131,6 +144,51 @@ const handleUpload = async (req, res) => {
         pdfFilename = await convertPPTToPDF(req.file.path, uploadsDir);
       }
 
+      const originalLocalPath = req.file.path;
+      const pdfLocalPath = path.join(uploadsDir, pdfFilename);
+
+      let finalOriginalPath = originalFilename;
+      let finalPdfPath = pdfFilename;
+
+      // Upload to Supabase Storage if configured
+      if (isSupabaseConfigured()) {
+        console.log('[Upload] Supabase Storage is configured. Uploading presentation files to Supabase bucket...');
+        
+        // 1. Upload original file
+        if (fs.existsSync(originalLocalPath)) {
+          const originalBuffer = fs.readFileSync(originalLocalPath);
+          const originalResult = await uploadToSupabase(
+            originalBuffer,
+            originalFilename,
+            getMimeType(originalFilename)
+          );
+          finalOriginalPath = originalResult.publicUrl || originalFilename;
+        }
+
+        // 2. Upload converted PDF file
+        if (fs.existsSync(pdfLocalPath)) {
+          const pdfBuffer = fs.readFileSync(pdfLocalPath);
+          const pdfResult = await uploadToSupabase(
+            pdfBuffer,
+            pdfFilename,
+            getMimeType(pdfFilename)
+          );
+          finalPdfPath = pdfResult.publicUrl || pdfFilename;
+        }
+
+        // Clean up temporary local files
+        try {
+          if (fs.existsSync(originalLocalPath)) fs.unlinkSync(originalLocalPath);
+          if (fs.existsSync(pdfLocalPath) && pdfLocalPath !== originalLocalPath) {
+            fs.unlinkSync(pdfLocalPath);
+          }
+        } catch (cleanupErr) {
+          console.warn('[Upload] Temp file cleanup warning:', cleanupErr.message);
+        }
+      } else {
+        console.log('[Upload] Supabase Storage not configured. Falling back to local disk storage in server/uploads/.');
+      }
+
       const now = new Date();
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const uploadedAtStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
@@ -138,13 +196,15 @@ const handleUpload = async (req, res) => {
 
       const newPPT = await PPT.create({
         presentationName: name,
-        originalFilePath: originalFilename,
-        pdfFilePath: pdfFilename,
+        originalFilePath: finalOriginalPath,
+        pdfFilePath: finalPdfPath,
         fileSize: req.file.size,
         version: v,
         uploadedBy: uploaderName,
         uploadedAt: uploadedAtStr
       });
+
+      const pdfUrl = getPublicUrl(newPPT.pdfFilePath);
 
       return res.status(201).json({
         success: true,
@@ -156,7 +216,7 @@ const handleUpload = async (req, res) => {
           presentationName: newPPT.presentationName,
           originalFilePath: newPPT.originalFilePath,
           pdfFilePath: newPPT.pdfFilePath,
-          pdfUrl: `/uploads/${newPPT.pdfFilePath}`,
+          pdfUrl,
           version: newPPT.version,
           uploadedBy: newPPT.uploadedBy,
           uploadedAt: newPPT.uploadedAt
@@ -181,17 +241,23 @@ router.delete('/', requireAdmin, async (req, res) => {
     const records = await PPT.findAll();
 
     for (const record of records) {
-      const originalPath = path.join(uploadsDir, record.originalFilePath);
-      const pdfPath = path.join(uploadsDir, record.pdfFilePath);
+      // Delete from Supabase if configured
+      if (isSupabaseConfigured() || record.pdfFilePath.startsWith('http')) {
+        await deleteFromSupabase([record.originalFilePath, record.pdfFilePath]);
+      }
+
+      // Delete local files if they exist
+      const originalPath = path.join(uploadsDir, path.basename(record.originalFilePath));
+      const pdfPath = path.join(uploadsDir, path.basename(record.pdfFilePath));
 
       if (fs.existsSync(originalPath)) fs.unlinkSync(originalPath);
-      if (fs.existsSync(pdfPath) && record.pdfFilePath !== record.originalFilePath) {
+      if (fs.existsSync(pdfPath) && pdfPath !== originalPath) {
         fs.unlinkSync(pdfPath);
       }
     }
 
     await PPT.destroy({ where: {} });
-    return res.json({ success: true, message: 'All presentations deleted from database & uploads directory.' });
+    return res.json({ success: true, message: 'All presentations deleted from database & storage.' });
   } catch (err) {
     console.error('Delete PPT error:', err);
     return res.status(500).json({ success: false, message: 'Failed deleting presentation records.' });
@@ -211,11 +277,17 @@ router.delete('/:id', requireAdmin, async (req, res) => {
       return res.status(404).json({ success: false, message: 'Presentation record not found.' });
     }
 
-    const originalPath = path.join(uploadsDir, record.originalFilePath);
-    const pdfPath = path.join(uploadsDir, record.pdfFilePath);
+    // Delete from Supabase if configured
+    if (isSupabaseConfigured() || record.pdfFilePath.startsWith('http')) {
+      await deleteFromSupabase([record.originalFilePath, record.pdfFilePath]);
+    }
+
+    // Delete local file if exists
+    const originalPath = path.join(uploadsDir, path.basename(record.originalFilePath));
+    const pdfPath = path.join(uploadsDir, path.basename(record.pdfFilePath));
 
     if (fs.existsSync(originalPath)) fs.unlinkSync(originalPath);
-    if (fs.existsSync(pdfPath) && record.pdfFilePath !== record.originalFilePath) {
+    if (fs.existsSync(pdfPath) && pdfPath !== originalPath) {
       fs.unlinkSync(pdfPath);
     }
 

@@ -13,6 +13,12 @@ services:
         sync: false
       - key: ADMIN_DEFAULT_PASSWORD
         sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SUPABASE_STORAGE_BUCKET
+        sync: false
 
   # Frontend Static Site
   - type: web
