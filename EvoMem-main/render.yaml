@@ -8,13 +8,13 @@ services:
     startCommand: node server.js
     envVars:
       - key: PORT
-        value: 5000
+        value: ${PORT}
       - key: JWT_SECRET
-        value: evomem_secure_jwt_secret_token_987654321_key
+        value: ${JWT_SECRET}
       - key: ADMIN_EMAILS
-        value: yprakash_be24@thapar.edu,ppatel_be24@thapar.edu,tkhandelwal_be24@thapar.edu,ryadav3_be24@thapar.edu
+        value: ${ADMIN_EMAILS}
       - key: ADMIN_DEFAULT_PASSWORD
-        value: admin123
+        value: ${ADMIN_DEFAULT_PASSWORD}
 
   # Frontend Static Site
   - type: web
@@ -29,4 +29,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_SERVER_BASE_URL
-        value: https://evomem-backend.onrender.com
+        value: ${VITE_SERVER_BASE_URL}
