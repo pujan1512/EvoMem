@@ -1,4 +1,4 @@
-export const SERVER_BASE = import.meta.env.VITE_SERVER_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://ekagraai-backend.onrender.com');
+export const SERVER_BASE = import.meta.env.VITE_SERVER_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://evomem-backend.onrender.com');
 const API_BASE = `${SERVER_BASE}/api`;
 
 function getAuthHeader() {

@@ -1,7 +1,7 @@
 {
-  "name": "ekagra-ai-server",
+  "name": "evomem-server",
   "version": "1.0.0",
-  "description": "EkagraAI Backend Server with MySQL and PPT Parser",
+  "description": "EvoMem Backend Server with MySQL and PPT Parser",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

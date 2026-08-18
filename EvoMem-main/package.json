@@ -1,7 +1,7 @@
 {
-  "name": "ekagra-ai-productivity-tracker",
+  "name": "evomem-productivity-tracker",
   "version": "1.0.0",
-  "description": "EkagraAI - Productivity Tracker (UCS503 Software Engineering Project)",
+  "description": "EvoMem - Productivity Tracker (UCS503 Software Engineering Project)",
   "private": true,
   "scripts": {
     "start": "cd server && node server.js",
