@@ -69,7 +69,7 @@ async function generateFallbackPDF(pptFilePath, targetPdfPath) {
         {
           slideNumber: 1,
           title: path.basename(pptFilePath, path.extname(pptFilePath)),
-          subtitle: 'EkagraAI Presentation Deck',
+          subtitle: 'EvoMem Presentation Deck',
           bullets: ['UCS503 Software Engineering Course Project', 'Uploaded Presentation Deck'],
           paragraphs: ['PowerPoint presentation document.']
         }

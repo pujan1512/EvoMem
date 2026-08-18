@@ -14,7 +14,7 @@ build/
 
 # Database Files
 *.sqlite
-server/ekagra_database.sqlite
+server/evomem_database.sqlite
 
 # Media & Presentation Uploads
 server/uploads/*

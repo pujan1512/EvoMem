@@ -7,7 +7,7 @@ node_modules/
 
 # SQLite Database & Storage
 *.sqlite
-ekagra_database.sqlite
+evomem_database.sqlite
 
 # Dynamic Upload Files
 uploads/*

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'ekagra_ai_super_secret_jwt_key_2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'evomem_secure_jwt_secret_token_987654321_key';
 
 function requireAdmin(req, res, next) {
   const authHeader = req.headers.authorization;

@@ -5,7 +5,7 @@ require('dotenv').config();
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_USER = process.env.DB_USER || 'root';
 const DB_PASS = process.env.DB_PASSWORD || '';
-const DB_NAME = process.env.DB_NAME || 'ekagra_db';
+const DB_NAME = process.env.DB_NAME || 'evomem_db';
 const DB_PORT = process.env.DB_PORT || 3306;
 
 let sequelize;
@@ -35,7 +35,7 @@ async function initDatabase() {
     
     const sqliteSequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: path.join(__dirname, '..', 'ekagra_database.sqlite'),
+      storage: path.join(__dirname, '..', 'evomem_database.sqlite'),
       logging: false
     });
     
@@ -51,7 +51,7 @@ const getSequelize = () => {
   if (!sequelize) {
     sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: path.join(__dirname, '..', 'ekagra_database.sqlite'),
+      storage: path.join(__dirname, '..', 'evomem_database.sqlite'),
       logging: false
     });
   }

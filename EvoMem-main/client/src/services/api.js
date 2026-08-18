@@ -2,7 +2,7 @@ export const SERVER_BASE = import.meta.env.VITE_SERVER_BASE_URL || (import.meta.
 const API_BASE = `${SERVER_BASE}/api`;
 
 function getAuthHeader() {
-  const token = localStorage.getItem('ekagra_admin_token');
+  const token = localStorage.getItem('evomem_admin_token');
   return token ? { 'Authorization': `Bearer ${token}` } : {};
 }
 

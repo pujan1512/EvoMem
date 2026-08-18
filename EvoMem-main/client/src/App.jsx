@@ -14,8 +14,8 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function App() {
   const [adminUser, setAdminUser] = useState(() => {
     try {
-      const savedUser = localStorage.getItem('ekagra_admin_user');
-      const token = localStorage.getItem('ekagra_admin_token');
+      const savedUser = localStorage.getItem('evomem_admin_user');
+      const token = localStorage.getItem('evomem_admin_token');
       return (token && savedUser) ? JSON.parse(savedUser) : null;
     } catch (e) {
       return null;
@@ -27,23 +27,23 @@ export default function App() {
 
   useEffect(() => {
     async function verifySession() {
-      const token = localStorage.getItem('ekagra_admin_token');
+      const token = localStorage.getItem('evomem_admin_token');
       if (token) {
         try {
           const res = await checkAuth();
           if (res && res.success && res.user) {
             setAdminUser(res.user);
-            localStorage.setItem('ekagra_admin_user', JSON.stringify(res.user));
+            localStorage.setItem('evomem_admin_user', JSON.stringify(res.user));
           } else if (res && res.message && res.message.includes('Token invalid')) {
-            localStorage.removeItem('ekagra_admin_token');
-            localStorage.removeItem('ekagra_admin_user');
+            localStorage.removeItem('evomem_admin_token');
+            localStorage.removeItem('evomem_admin_user');
             setAdminUser(null);
           }
         } catch (e) {
           // On network hiccup or page reload, preserve existing token & user session
         }
       } else {
-        localStorage.removeItem('ekagra_admin_user');
+        localStorage.removeItem('evomem_admin_user');
         setAdminUser(null);
       }
       setAuthChecking(false);
@@ -53,9 +53,9 @@ export default function App() {
 
   const handleLoginSuccess = (user, token) => {
     if (token) {
-      localStorage.setItem('ekagra_admin_token', token);
+      localStorage.setItem('evomem_admin_token', token);
     }
-    localStorage.setItem('ekagra_admin_user', JSON.stringify(user));
+    localStorage.setItem('evomem_admin_user', JSON.stringify(user));
     setAdminUser(user);
     if (user.role === 'admin') {
       navigate('/admin');
@@ -65,8 +65,8 @@ export default function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('ekagra_admin_token');
-    localStorage.removeItem('ekagra_admin_user');
+    localStorage.removeItem('evomem_admin_token');
+    localStorage.removeItem('evomem_admin_user');
     setAdminUser(null);
     navigate('/');
   };

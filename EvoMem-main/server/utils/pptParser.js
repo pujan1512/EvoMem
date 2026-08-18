@@ -74,7 +74,7 @@ async function parsePPTX(filePath) {
         title: slideTitle,
         bullets: bullets.length > 0 ? bullets : (bodyTexts.length > 0 ? bodyTexts : ['Key topic details and discussion points']),
         paragraphs: paragraphs,
-        subtitle: `EkagraAI Presentation Deck - Slide ${i + 1}`,
+        subtitle: `EvoMem Presentation Deck - Slide ${i + 1}`,
         bgColor: bgColor || null
       });
     }
