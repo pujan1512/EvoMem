@@ -3,24 +3,22 @@ services:
   - type: web
     name: evomem-backend
     env: node
-    rootDir: EvoMem-main/server
+    rootDir: server
     buildCommand: npm install
     startCommand: node server.js
     envVars:
-      - key: PORT
-        value: ${PORT}
       - key: JWT_SECRET
-        value: ${JWT_SECRET}
+        sync: false
       - key: ADMIN_EMAILS
-        value: ${ADMIN_EMAILS}
+        sync: false
       - key: ADMIN_DEFAULT_PASSWORD
-        value: ${ADMIN_DEFAULT_PASSWORD}
+        sync: false
 
   # Frontend Static Site
   - type: web
     name: evomem-frontend
     env: static
-    rootDir: EvoMem-main/client
+    rootDir: client
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     routes:
@@ -29,4 +27,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_SERVER_BASE_URL
-        value: ${VITE_SERVER_BASE_URL}
+        sync: false
