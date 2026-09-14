@@ -23,7 +23,7 @@ services:
   # Frontend Static Site
   - type: web
     name: evomem-frontend
-    env: static
+    runtime: static
     rootDir: EvoMem-main/client
     buildCommand: npm install && npm run build
     staticPublishPath: dist
