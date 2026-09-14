@@ -53,6 +53,18 @@ export default function Home({ adminUser }) {
     navigate('/ppt-viewer');
   };
 
+  const handleViewGantt = () => {
+    navigate('/gantt');
+  };
+
+  const handleViewFeasibility = () => {
+    navigate('/feasibility');
+  };
+
+  const handleViewMilestones = () => {
+    navigate('/milestones');
+  };
+
   const isAdmin = adminUser && adminUser.role === 'admin';
 
   return (
@@ -63,7 +75,7 @@ export default function Home({ adminUser }) {
           <div className="course-tag">
             {project?.courseLabel || 'UCS503 Software Engineering'}
           </div>
-          
+
           {/* Brand Title */}
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', flexWrap: 'wrap' }}>
             <h1 className="brand-title-main" style={{ margin: 0 }}>
@@ -82,7 +94,63 @@ export default function Home({ adminUser }) {
             EvoMem is a validated, retrieval-gated experience memory system for autonomous coding agents built on top of OpenHands. Instead of blindly replaying raw trajectories, it distills completed tasks into sandbox-verified experience records, employing hybrid retrieval (semantic, error-signature, code-structure) with context-aware gating that abstains when repository transfer is unsafe. Evaluated against four baselines across chronological, leak-free issue sequences, EvoMem investigates when past experience helps, when it silently hurts, and how agents can tell the difference.
           </p>
 
-          <TechStackBadges stack={['OpenHands Core', 'Sandbox Validation', 'Hybrid Retrieval', 'Retrieval Gating', 'Version Invalidation', 'Negative-Transfer Safeguards']} />
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', marginTop: '1rem' }}>
+            <TechStackBadges stack={['OpenHands Core', 'Sandbox Validation', 'Hybrid Retrieval', 'Retrieval Gating', 'Version Invalidation', 'Negative-Transfer Safeguards']} />
+          </div>
+
+          <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <button
+              onClick={handleViewGantt}
+              className="btn-solid"
+              style={{
+                backgroundColor: '#0284c7',
+                borderColor: '#38bdf8',
+                padding: '0.6rem 1.25rem',
+                fontSize: '0.95rem',
+                fontWeight: '600',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                cursor: 'pointer'
+              }}
+            >
+              View Gantt Chart
+            </button>
+            <button
+              onClick={handleViewFeasibility}
+              className="btn-solid"
+              style={{
+                backgroundColor: '#0d9488',
+                borderColor: '#2dd4bf',
+                padding: '0.6rem 1.25rem',
+                fontSize: '0.95rem',
+                fontWeight: '600',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                cursor: 'pointer'
+              }}
+            >
+              View Feasibility Report
+            </button>
+            <button
+              onClick={handleViewMilestones}
+              className="btn-solid"
+              style={{
+                backgroundColor: '#7c3aed',
+                borderColor: '#a855f7',
+                padding: '0.6rem 1.25rem',
+                fontSize: '0.95rem',
+                fontWeight: '600',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                cursor: 'pointer'
+              }}
+            >
+              View Milestone Plan
+            </button>
+          </div>
         </div>
 
         {/* Compact Version Box */}

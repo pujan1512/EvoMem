@@ -6,6 +6,9 @@ import Team from './pages/Team';
 import Admin from './pages/Admin';
 import V2 from './pages/V2';
 import PPTViewPage from './pages/PPTViewPage';
+import GanttChart from './pages/GanttChart';
+import FeasibilityReport from './pages/FeasibilityReport';
+import MilestonePlan from './pages/MilestonePlan';
 import ErrorPage from './pages/ErrorPage';
 import { checkAuth } from './services/api';
 import { ToastContainer } from 'react-toastify';
@@ -91,6 +94,10 @@ export default function App() {
             }
           />
           <Route path="/v2" element={<V2 />} />
+          <Route path="/gantt" element={<GanttChart />} />
+          <Route path="/feasibility" element={<FeasibilityReport />} />
+          <Route path="/milestones" element={<MilestonePlan />} />
+          <Route path="/milestone-plan" element={<MilestonePlan />} />
           <Route path="/ppt" element={<PPTViewPage />} />
           <Route path="/ppt-viewer" element={<PPTViewPage />} />
           {/* Catch-all invalid route renders custom Error Page */}
