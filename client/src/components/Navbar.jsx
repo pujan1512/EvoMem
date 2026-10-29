@@ -29,6 +29,14 @@ export default function Navbar({ adminUser, onLogout }) {
               Team
             </NavLink>
           </li>
+          <li>
+            <NavLink 
+              to="/evomem" 
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            >
+              EvoMem Pipeline
+            </NavLink>
+          </li>
 
           {adminUser ? (
             <>

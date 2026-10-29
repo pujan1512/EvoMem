@@ -12,6 +12,7 @@ const { router: projectRouter, seedProjectMeta } = require('./routes/project');
 const { router: changesRouter, seedChangeLogs } = require('./routes/changes');
 const { router: pptRouter, seedDefaultPPT } = require('./routes/ppt');
 const { router: teamRouter, seedTeamMembers } = require('./routes/team');
+const { router: evomemRouter } = require('./routes/evomem');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,6 +31,7 @@ app.use('/api/project', projectRouter);
 app.use('/api/changes', changesRouter);
 app.use('/api/ppt', pptRouter);
 app.use('/api/team', teamRouter);
+app.use('/api/evomem', evomemRouter);
 
 // Healthcheck & API Root Status
 app.get('/api/health', (req, res) => {

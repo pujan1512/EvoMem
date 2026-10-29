@@ -91,3 +91,70 @@ export async function fetchTeam() {
   const res = await fetch(`${API_BASE}/team`);
   return res.json();
 }
+
+// --- EvoMem Pipeline API calls ---
+export async function fetchEvoMemPhases() {
+  const res = await fetch(`${API_BASE}/evomem/phases`);
+  return res.json();
+}
+
+export async function fetchEvoMemData(phase) {
+  const res = await fetch(`${API_BASE}/evomem/data/${phase}`);
+  return res.json();
+}
+
+export async function triggerOrchestrator(phase) {
+  const res = await fetch(`${API_BASE}/evomem/run-orchestrator`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phase })
+  });
+  return res.json();
+}
+
+export async function triggerExtractExperience(phase) {
+  const res = await fetch(`${API_BASE}/evomem/extract-experience`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phase })
+  });
+  return res.json();
+}
+
+export async function triggerDistillExperience(phase) {
+  const res = await fetch(`${API_BASE}/evomem/distill-experience`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phase })
+  });
+  return res.json();
+}
+
+export async function triggerValidateMemory(phase) {
+  const res = await fetch(`${API_BASE}/evomem/validate-memory`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phase })
+  });
+  return res.json();
+}
+
+export async function triggerBuildIndex(phase) {
+  const res = await fetch(`${API_BASE}/evomem/build-index`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phase })
+  });
+  return res.json();
+}
+
+export async function createEvoMemProblem(data) {
+  const res = await fetch(`${API_BASE}/evomem/create-problem`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+

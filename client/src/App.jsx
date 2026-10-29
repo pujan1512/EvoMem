@@ -9,6 +9,7 @@ import PPTViewPage from './pages/PPTViewPage';
 import GanttChart from './pages/GanttChart';
 import FeasibilityReport from './pages/FeasibilityReport';
 import MilestonePlan from './pages/MilestonePlan';
+import EvoMemPipeline from './pages/EvoMemPipeline';
 import ErrorPage from './pages/ErrorPage';
 import { checkAuth } from './services/api';
 import { ToastContainer } from 'react-toastify';
@@ -100,6 +101,7 @@ export default function App() {
           <Route path="/milestone-plan" element={<MilestonePlan />} />
           <Route path="/ppt" element={<PPTViewPage />} />
           <Route path="/ppt-viewer" element={<PPTViewPage />} />
+          <Route path="/evomem" element={<EvoMemPipeline />} />
           {/* Catch-all invalid route renders custom Error Page */}
           <Route path="*" element={<ErrorPage />} />
         </Routes>
